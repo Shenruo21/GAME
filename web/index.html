@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>花瓶姑娘怪谈 · 原型</title>
+<link rel="stylesheet" href="css/retro.css">
+<link rel="stylesheet" href="css/sites.css">
+<link rel="stylesheet" href="css/cover.css">
+<link rel="stylesheet" href="css/boot.css">
+</head>
+<body>
+
+<!-- ══════════════ 封面 ══════════════ -->
+<div id="cover" class="cover">
+  <div class="crt-flick"></div>
+  <div class="crt-scan"></div>
+  <div class="crt-vig"></div>
+  <div class="cover-frame"></div>
+
+  <!-- ★ 四周的装饰。全部从那张素材图里抠的。
+       都很淡 —— 它们是空气，不是内容。 -->
+  <img class="cover-vase"  src="assets/ui/vase.png"      alt="">
+  <img class="cover-eye"   src="assets/ui/deco-eye.png"  alt="">
+  <img class="cover-fly"   src="assets/ui/deco-fly.png"  alt="">
+  <img class="cover-hand"  src="assets/ui/deco-hand.png" alt="">
+  <img class="cover-moon"  src="assets/ui/deco-moon.png" alt="">
+  <img class="cover-frame"  src="assets/ui/deco-frame.png"  alt="">
+  <!-- v3.7 新加的一批，同样全部来自那张素材图 -->
+  <img class="cover-mirror" src="assets/ui/deco-mirror.png" alt="">
+  <img class="cover-rose"   src="assets/ui/deco-rose.png"   alt="">
+  <img class="cover-cd"     src="assets/ui/deco-cd.png"     alt="">
+  <img class="cover-film"   src="assets/ui/deco-film.png"   alt="">
+  <img class="cover-shrine" src="assets/ui/deco-shrine.png" alt="">
+  <img class="cover-star cover-star-a" src="assets/ui/deco-star.png" alt="">
+  <img class="cover-star cover-star-b" src="assets/ui/deco-star.png" alt="">
+  <img class="cover-star cover-star-c" src="assets/ui/deco-star.png" alt="">
+  <!-- 故障层：横向撕裂、纵向滚动、噪声 -->
+  <div class="cover-tear cover-tear-a"></div>
+  <div class="cover-tear cover-tear-b"></div>
+  <div class="cover-roll"></div>
+  <div class="cover-noise"></div>
+  <div class="cover-inner">
+    <div class="cover-body">
+      <div class="cover-head">
+        <!-- ★ 标题改用美术字图。
+             原来是一行 <h1> 加一个印章加一条分隔线 ——
+             那三样凑在一起太"模板"了。
+             现在上面是系列名「怪奇诡页」，中间是本作大标题。
+             两张图**自带透明通道**，直接摆在深色底上。 -->
+        <img class="cover-brand" src="assets/title-strange.png"
+             alt="怪奇诡页 · STRANGE PAGES">
+        <h1 class="cover-main">
+          <img src="assets/title-vase.png" alt="花瓶姑娘怪谈 · THE VASE GIRL">
+        </h1>
+        <!-- ★ 分隔线换成了素材里那条**心电图**。
+             之前那条金色渐变线是典型的 AI 装饰，删了之后
+             这里用一个真的千纪年 UI 元素顶上。 -->
+        <img class="cover-ecg" src="assets/ui/ecg.png" alt="">
+        <div class="cover-sub">槐 桥 镇 · 一 九 九 九 · 柳 河</div>
+        <!-- ★★ 一句话交代玩家是谁。
+             旧设定是"外婆的电脑"，已废弃 ——
+             现在是：一个收旧机器的人，拿到了一台没擦干净的硬盘。 -->
+        <div class="cover-note">一台从旧货市场收来的机器。硬盘没有擦干净。</div>
+      </div>
+
+      <div class="cover-ctrl">
+        <label class="cover-check">
+          <input type="checkbox" id="opt-gentle"> 降低惊吓强度
+        </label>
+        <!-- 背景音乐。★ 默认不勾 —— 进来不播，玩家自己勾了才播。
+             不做自动播放：浏览器在玩家操作过页面之前不许出声，
+             硬要"自动响"只会补出一堆时序问题。
+             勾选那一下本身就是用户手势，一定放得出来。
+             文件名叫 (loop)，所以是循环播放的。 -->
+        <label class="cover-check">
+          <input type="checkbox" id="opt-music"> 背景音乐
+        </label>
+        <label class="cover-vol">
+          音量 <input type="range" id="opt-vol" min="0" max="100" value="45">
+          <span id="vol-label">45%</span>
+        </label>
+      </div>
+
+      <!-- ★ 开始键：整张美术字图。有存档时换另一张（继续上次）。 -->
+      <button id="btn-start" class="cover-enter" aria-label="开始">
+        <img id="btn-start-img" src="assets/ui/btn-start.png" alt="开始">
+      </button>
+
+      <div class="cover-foot">
+        <span>您是第 <b>00249</b> 位访客</span>
+        <span>本站建于 1999 年 9 月 · 站长 老K</span>
+      </div>
+
+      <div class="cover-credit">
+        <span>音乐由 <b>乌鸦Producer</b> 提供</span>
+        <span class="music-hint" id="music-hint">（勾选「背景音乐」开始播放）</span>
+      </div>
+      <audio id="bgm" src="assets/cover-music.wav" loop preload="auto"></audio>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 郑重声明（点「开始」才弹） ══════════════ -->
+<!-- ★ 它以前就摆在封面上，占了一大块。现在藏起来，
+     玩家点了「开始」才弹。确认之后才真开始。
+     **存档里记着** —— 继续游戏不会再弹，新存档只弹一次。 -->
+<div id="disclaimer" class="disc hidden">
+  <div class="disc-box">
+    <!-- ★ v3.7：外壳换成素材里那个**浏览器窗口框**。
+         它自带标题栏和右上角三个按钮，
+         所以标题和 × 要**摆进去**，不能另外画一条。 -->
+    <span class="disc-title">郑 重 声 明</span>
+    <span class="disc-x" id="disc-x">×</span>
+    <div class="disc-body">
+      <ul>
+        <li>本作含有<b>突然的画面与音效</b></li>
+        <li>建议安静环境、佩戴耳机，<b>音量调低</b></li>
+        <li>按 <kbd>Esc</kbd> 可随时暂停</li>
+        <li>所有惊吓<b>均可关闭</b>，叙事不受影响</li>
+      </ul>
+    </div>
+    <div class="disc-btns">
+      <button id="disc-ok" class="disc-ok">
+        <img class="ce-ico" src="assets/ui/btn-ok.png" alt="">
+        <span>确 认</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 开机登录页 ══════════════ -->
+<div id="boot" class="boot hidden">
+  <div class="boot-top">
+    <span class="boot-wordmark">Microsoft<b>Windows</b></span>
+    <span class="spacer"></span>
+    <span class="dayline">若要开始，请单击您的用户名</span>
+  </div>
+
+  <div class="boot-band" id="boot-band">
+    <div class="boot-inner">
+      <div class="boot-avatar" id="boot-avatar"></div>
+      <div class="boot-form">
+        <div class="boot-user">小雨</div>
+        <div class="boot-ask">要开始，请键入您的密码</div>
+        <div class="boot-row">
+          <input class="boot-input" id="boot-pass" type="password"
+                 autocomplete="off" spellcheck="false" maxlength="24">
+          <button class="boot-go" id="boot-go" title="登录">→</button>
+        </div>
+        <div class="boot-hint">
+          密码提示：<b>我最喜欢的颜色</b><br>
+          <span style="color:#9fb4ea">（忘了的话……看看周围。）</span>
+        </div>
+        <div class="boot-err" id="boot-err"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 复古系统弹窗：进开机页时弹一次，每个存档只弹一次 ══
+       ★ 故意做成**系统自己的灰窗口** —— 开机页是小雨自己贴满粉色贴纸的，
+         而这个是机器自带的东西，跟她的装饰不是一路。 -->
+  <div id="notice" class="notice hidden">
+    <div class="dlg notice-dlg">
+      <div class="dlg-titlebar">
+        <span>关于本作</span>
+        <button class="notice-x" id="notice-x" title="关闭">×</button>
+      </div>
+      <div class="dlg-body notice-body">
+        <div class="notice-ico">!</div>
+        <div class="notice-txt">
+          <p class="notice-hd">声明</p>
+          <p>本游戏纯属虚构，所有时间线均为虚假，所有人物均为虚构不存在。</p>
+          <p>请勿较真虚假时间线以及当年的发展，这是原创的世界观。</p>
+          <p>游戏内的谜题需要四处探索，请仔细观察每个页面，里面藏着许多线索和彩蛋。</p>
+          <p>有任何问题可以在 bilibili 上找到我反馈！谢谢您的游玩！！</p>
+        </div>
+      </div>
+      <div class="dlg-btns">
+        <button class="btn98" id="notice-ok">确 定</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="boot-bottom">
+    <a class="off" id="boot-off"><span class="ico16">⏻</span>关闭计算机</a>
+    <a><span class="ico16">↻</span>重新启动</a>
+    <span class="tip">本机登录信息由「新纪元网吧」代为维护</span>
+  </div>
+</div>
+
+<!-- ══════════════ 桌面 ══════════════
+     ★ 桌面**不在浏览器窗口里**。
+     它是这台电脑的桌面本身，和开机登录页一样铺满整个屏幕。
+     双击 IE 才会打开浏览器窗口（#shell），那时才出现标题栏和地址栏。
+     浏览器右上角的 × 关掉浏览器，就回到这里。 -->
+<div id="desk-screen" class="desk-screen hidden"></div>
+
+<!-- ══════════════ 假浏览器外壳 ══════════════ -->
+<div id="shell" class="shell hidden">
+  <div class="win98-window main-window">
+
+    <!-- 标题栏 -->
+    <div class="titlebar" id="titlebar">
+      <span class="tb-icon">🌐</span>
+      <span class="tb-text" id="tb-text">槐桥信息港 - Microsoft Internet Explorer</span>
+      <span class="tb-buttons">
+        <button class="tb-btn">_</button>
+        <button class="tb-btn">□</button>
+        <button class="tb-btn close" id="btn-close-win" title="关闭浏览器">×</button>
+      </span>
+    </div>
+
+    <!-- 菜单栏 -->
+    <div class="menubar">
+      <span class="menu-item">文件(F)</span>
+      <span class="menu-item">编辑(E)</span>
+      <span class="menu-item">查看(V)</span>
+      <span class="menu-item">收藏(A)</span>
+      <span class="menu-item">工具(T)</span>
+      <span class="menu-item">帮助(H)</span>
+    </div>
+
+    <!-- 工具栏 -->
+    <div class="toolbar">
+      <button class="tbtn" id="btn-back" title="后退">◀ 后退</button>
+      <button class="tbtn" id="btn-fwd" title="前进">前进 ▶</button>
+      <button class="tbtn" id="btn-stop" title="停止">✕</button>
+      <button class="tbtn" id="btn-refresh" title="刷新">⟳</button>
+      <button class="tbtn" id="btn-home" title="主页">🏠</button>
+      <span class="tb-sep"></span>
+      <label class="addr-label">地址</label>
+      <input class="addr-input" id="addr" spellcheck="false" autocomplete="off">
+      <button class="tbtn" id="btn-go">转到</button>
+    </div>
+
+
+    <!-- 标签栏：同时开着的网页。跨站跳转会自己新开一个。 -->
+    <div class="tabbar hidden" id="tabbar"></div>
+
+    <!-- 视口 -->
+    <div class="viewport" id="viewport"></div>
+
+    <!-- 状态栏 -->
+    <div class="statusbar">
+      <span class="sb-main" id="status">完成</span>
+      <span class="sb-zone" id="status-zone">Internet</span>
+    </div>
+  </div>
+</div>
+
+<!-- 右键菜单 / 浮层容器 -->
+<div id="ctxmenu" class="ctxmenu hidden"></div>
+<div id="overlay" class="overlay hidden"></div>
+<div id="toast" class="toast hidden"></div>
+
+<!-- 惊吓层 -->
+<div id="scare" class="scare hidden"></div>
+
+<!-- 系统故障层（拨对大篷车那组色标时用）。
+     盖在**所有东西**上面，包括浏览器窗口和桌面 ——
+     要的就是"整台电脑出问题了"，而不是"这个网页出问题了"。 -->
+<div id="sys-glitch" class="sys-glitch"></div>
+
+<script src="js/illus.js"></script>
+<script src="js/horror.js"></script>
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/sites.js"></script>
+<script>VG.boot();</script>
+</body>
+</html>
